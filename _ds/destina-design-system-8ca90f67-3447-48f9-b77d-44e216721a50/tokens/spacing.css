@@ -1,0 +1,23 @@
+/* Destina — spacing, layout & breakpoints */
+:root {
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  --content-max: 1200px;
+  --content-max-mobile: 420px;
+  --nav-height: 64px;
+  --gutter: 24px;
+  --gutter-mobile: 20px;
+  --section-y: 48px;
+  --grid-gap: 1.25rem;
+  /* Breakpoints: mobile = DG apps column (396px card) · desktop = max content width · wide = website canvas */
+  --bp-mobile: 420px; /* @kind spacing */
+  --bp-tablet: 768px; /* @kind spacing */
+  --bp-desktop: 1200px; /* @kind spacing */
+  --bp-wide: 1440px; /* @kind spacing */
+}
