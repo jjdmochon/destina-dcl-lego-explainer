@@ -654,6 +654,23 @@ function Stage({
 function PlaybackBar({ time, duration, playing, onPlayPause, onReset, onSeek, onHover }) {
   const trackRef = React.useRef(null);
   const [dragging, setDragging] = React.useState(false);
+  const [downloadNotice, setDownloadNotice] = React.useState(null);
+
+  const handleDownload = () => {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'omelette:request-video-export' }, '*');
+      }
+    } catch {}
+    const a = document.createElement('a');
+    a.href = 'assets/video/destina-dcl-lego-explainer.mp4';
+    a.download = 'DESTINA_DCL_miRNA_Detection_Explainer.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setDownloadNotice('Downloading MP4 (27.6 MB)...');
+    setTimeout(() => setDownloadNotice(null), 3500);
+  };
 
   const timeFromEvent = React.useCallback((e) => {
     const rect = trackRef.current.getBoundingClientRect();
@@ -806,16 +823,26 @@ function PlaybackBar({ time, duration, playing, onPlayPause, onReset, onSeek, on
         {fmt(duration)}
       </div>
 
-      {typeof VideoEncoder !== 'undefined' && (
+      <div style={{ position: 'relative' }}>
         <IconButton
-          title="Export video"
-          onClick={() => window.parent.postMessage({ type: 'omelette:request-video-export' }, '*')}
+          title="Download video (MP4 · 720p with synchronized audio)"
+          onClick={handleDownload}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M7 2v7m0 0L4 6m3 3l3-3M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </IconButton>
-      )}
+        {downloadNotice && (
+          <div style={{
+            position: 'absolute', bottom: 30, right: 0, whiteSpace: 'nowrap',
+            background: 'rgba(0,57,202,0.95)', color: '#fff', fontSize: 11,
+            fontWeight: 500, padding: '5px 10px', borderRadius: 6,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)', pointerEvents: 'none', zIndex: 100
+          }}>
+            {downloadNotice}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

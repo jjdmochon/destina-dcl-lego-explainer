@@ -757,6 +757,15 @@ function Piece({ tw }) {
   );
 }
 
+function downloadMedia(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 function DCLExplainer() {
   const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS || { motionEditor: true, callouts: true, captions: true, orbit: true, voice: true, voiceRate: 1 });
   return (
@@ -773,6 +782,9 @@ function DCLExplainer() {
         <TweakToggle label="Voice-over" value={t.voice} onChange={v => setTweak('voice', v)} />
         <TweakSlider label="Speaking rate" value={t.voiceRate || 1} min={0.8} max={1.2} step={0.02} onChange={v => setTweak('voiceRate', v)} />
         <TweakToggle label="Camera drift" value={t.orbit} onChange={v => setTweak('orbit', v)} />
+        <TweakSection label="Media & Downloads" />
+        <TweakButton label="Download Video (MP4 · 27.6 MB)" onClick={() => downloadMedia('assets/video/destina-dcl-lego-explainer.mp4', 'DESTINA_DCL_miRNA_Detection_Explainer.mp4')} />
+        <TweakButton label="Download Audio (WAV · 3.8 MB)" secondary onClick={() => downloadMedia('assets/vo/voiceover.wav', 'DESTINA_DCL_Voiceover_Master.wav')} />
       </TweaksPanel>
     </React.Fragment>
   );
