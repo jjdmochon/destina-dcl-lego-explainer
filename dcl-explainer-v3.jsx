@@ -598,12 +598,12 @@ const VO = [
   { cue: 'Sample', d: 0.3, text: 'Serum goes straight onto colour-coded beads. No extraction, no PCR.', say: 'Serum goes straight onto colour-coded beads. No extraction. No P C R.' },
   { cue: 'Bead', d: 0.8, text: 'Each bead carries an abasic PNA probe, with one blank position.', say: 'Each bead carries an abasic P N A probe, with one blank position.' },
   { cue: 'Capture', d: 0.4, text: 'miR-122 and miR-451 each hybridise to their own bead.', say: 'Micro R N A one-twenty-two, and four-fifty-one, each bind their own bead.' },
-  { cue: 'Capture', d: 5.2, text: 'Opposite the blank sits a single guanine.', say: 'Opposite the blank sits a single guanine.' },
+  { cue: 'Capture', d: 5.7, text: 'Opposite the blank sits a single guanine.', say: 'Opposite the blank sits a single guanine.' },
   { cue: 'Label', d: 0.5, text: 'SMART-C-Biotin samples the blank position, reversibly.', say: 'Smart C biotin samples the blank position, reversibly.' },
-  { cue: 'Label', d: 4.4, text: 'It stays only if it pairs with G.', say: 'It stays only if it pairs with G.' },
-  { cue: 'Label', d: 7.0, text: 'Reduction then locks it in, covalently.', say: 'Reduction then locks it in, covalently.' },
+  { cue: 'Label', d: 4.7, text: 'It stays only if it pairs with G.', say: 'It stays only if it pairs with G.' },
+  { cue: 'Label', d: 7.3, text: 'Reduction then locks it in, covalently.', say: 'Reduction then locks it in, covalently.' },
   { cue: 'SingleBase', d: 0.5, text: 'Here, the base facing the blank is adenine, not guanine.', say: 'Here, the base facing the blank is adenine, not guanine.' },
-  { cue: 'SingleBase', d: 4.6, text: 'SMART-C cannot pair, so nothing is added. Single-base resolution.', say: 'Smart C cannot pair, so nothing is added. Single-base resolution.' },
+  { cue: 'SingleBase', d: 4.8, text: 'SMART-C cannot pair, so nothing is added. Single-base resolution.', say: 'Smart C cannot pair, so nothing is added. Single-base resolution.' },
   { cue: 'Illuminate', d: 0.5, text: 'Streptavidin-phycoerythrin binds the biotin, and the bead glows.', say: 'Streptavidin phyco-erythrin binds the biotin, and the bead glows.' },
   { cue: 'Illuminate', d: 4.3, text: 'Mismatched and empty beads stay dark.', say: 'Mismatched and empty beads stay dark.' },
   { cue: 'Instrument', d: 0.4, text: 'The plate is read on a Luminex instrument.', say: 'The plate is read on a Luminex instrument.' },
@@ -636,42 +636,80 @@ const REC = { track: null, clips: [], mode: 'none' };
     });
   });
 })();
-function VoiceOver({ on, rate }) {
+function VoiceOver({ on, rate = 1 }) {
   const { T, CUES, playing } = useComposition();
   const ref = React.useRef({ last: -1, said: {}, cur: null });
   React.useEffect(() => {
     const r = ref.current;
+    const isSeeking = r.last >= 0 && Math.abs(T - r.last) > 0.3;
+
     if (REC.mode === 'track') {
       const a = REC.track;
-      if (!on || !playing) { if (!a.paused) a.pause(); if (Math.abs(a.currentTime - T) > 0.05) a.currentTime = Math.min(T, a.duration || T); return; }
-      if (Math.abs(a.currentTime - T) > 0.3) a.currentTime = T;
-      if (a.paused && T < (a.duration || 1e9)) a.play().catch(() => {});
+      if (!on || !playing) {
+        if (!a.paused) a.pause();
+        if (Math.abs(a.currentTime - T) > 0.05) a.currentTime = Math.min(T, a.duration || T);
+        r.last = T;
+        return;
+      }
+      if (Math.abs(a.playbackRate - (rate || 1)) > 0.01) {
+        a.playbackRate = rate || 1;
+      }
+      if (isSeeking || Math.abs(a.currentTime - T) > 0.35) {
+        a.currentTime = Math.min(T, a.duration || T);
+      }
+      if (a.paused && T < (a.duration || 1e9)) {
+        a.play().catch(() => {});
+      }
+      r.last = T;
       return;
     }
+
     if (REC.mode === 'clips') {
       const stop = () => { if (r.cur) { r.cur.pause(); r.cur = null; } };
       if (!on || !playing) { stop(); r.said = {}; r.last = T; return; }
-      if (T < r.last - 0.5) { stop(); r.said = {}; }
+      if (isSeeking || T < r.last - 0.5) { stop(); r.said = {}; }
       VO.forEach((l, i) => {
         const at = CUES[l.cue] + l.d, c = REC.clips[i];
-        if (c && !r.said[i] && T >= at && T < at + 0.6) { r.said[i] = 1; stop(); c.currentTime = 0; c.play().catch(() => {}); r.cur = c; }
+        if (c && !r.said[i] && T >= at && T < at + 0.6) {
+          r.said[i] = 1;
+          stop();
+          c.playbackRate = rate || 1;
+          c.currentTime = 0;
+          c.play().catch(() => {});
+          r.cur = c;
+        }
       });
-      r.last = T; return;
+      r.last = T;
+      return;
     }
-    const ss = window.speechSynthesis; if (!ss) return;
+
+    const ss = window.speechSynthesis;
+    if (!ss) return;
     if (!on || !playing) { if (ss.speaking || ss.pending) ss.cancel(); r.said = {}; r.last = T; return; }
-    if (T < r.last - 0.5) { ss.cancel(); r.said = {}; }
+    if (isSeeking || T < r.last - 0.5) { ss.cancel(); r.said = {}; }
     VO.forEach((l, i) => {
       const at = CUES[l.cue] + l.d;
       if (!r.said[i] && T >= at && T < at + 0.6) {
-        r.said[i] = 1; ss.cancel();
+        r.said[i] = 1;
+        ss.cancel();
         const v = pickVoice(ss);
-        if (v) { const u = new SpeechSynthesisUtterance(l.say); u.lang = v.lang; u.voice = v; u.rate = rate; u.pitch = 1.05; ss.speak(u); }
+        if (v) {
+          const u = new SpeechSynthesisUtterance(l.say);
+          u.lang = v.lang;
+          u.voice = v;
+          u.rate = rate;
+          u.pitch = 1.05;
+          ss.speak(u);
+        }
       }
     });
     r.last = T;
   });
-  React.useEffect(() => () => { window.speechSynthesis && window.speechSynthesis.cancel(); REC.track && REC.track.pause(); REC.clips.forEach(c => c && c.pause()); }, []);
+  React.useEffect(() => () => {
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    REC.track && REC.track.pause();
+    REC.clips.forEach(c => c && c.pause());
+  }, []);
   return null;
 }
 function Piece({ tw }) {

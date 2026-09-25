@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Destina Genomica — Chemical Catalogue Master App</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header class="destina-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <div class="brand-logo-icon">D</div>
+        <div class="brand-titles">
+          <h1>DESTINA GENOMICA <span class="brand-badge">Catalogue App</span></h1>
+          <p>Chemical Biology & Diagnostic Probe Library — Master Technical Platform</p>
+        </div>
+      </div>
+
+      <div class="header-badges">
+        <div class="iso-pill"><i>✓</i> ISO 9001:2015</div>
+        <div class="iso-pill"><i>✓</i> ISO 13485:2016</div>
+        <div class="iso-pill"><i>✓</i> Release 4.0 (81 Entities)</div>
+      </div>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+          🌙 Dark Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner & Stats Row -->
+  <section class="hero-banner">
+    <div class="hero-inner">
+      <div class="hero-stats-row">
+        <div class="hero-stat-card">
+          <div class="stat-icon">⚗️</div>
+          <div class="stat-content">
+            <div class="stat-val">81 Entities</div>
+            <div class="stat-lbl">Validated Compounds</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">🧬</div>
+          <div class="stat-content">
+            <div class="stat-val">6 Steps</div>
+            <div class="stat-lbl">SMART Cytosine Cascade</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-content">
+            <div class="stat-val">100.0% ee</div>
+            <div class="stat-lbl">Chiral HPLC Stereocontrol</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <div class="stat-val">≥ 90.0%</div>
+            <div class="stat-lbl">Analytical Purity (CBU-2)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Row: Search + View Tabs + Exports -->
+      <div class="search-controls-bar">
+        <div class="search-box-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID (e.g. DST-SMT-001), CAS, formula, SMILES, IUPAC...">
+        </div>
+
+        <div class="view-tabs">
+          <button class="view-tab-btn active" data-view="catalogue">🗂 Grid Cards</button>
+          <button class="view-tab-btn" data-view="table">📊 Master Table</button>
+          <button class="view-tab-btn" data-view="pathways">⚗️ Reaction Pathways</button>
+          <button class="view-tab-btn" data-view="qc">📈 QC & Retention</button>
+        </div>
+
+        <div class="export-btn-group">
+          <button id="exportJsonBtn" class="btn-action" title="Export full JSON dataset">JSON</button>
+          <button id="exportSdfBtn" class="btn-action" title="Download consolidated SDF">SDF</button>
+          <button id="printDossierBtn" class="btn-action" title="Print regulatory dossier">Print</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="app-main">
+
+    <!-- Category Chips Filter -->
+    <nav id="categoryFilterNav" class="category-filter-nav">
+      <!-- Injected via app.js -->
+    </nav>
+
+    <!-- Results Header -->
+    <div class="results-header-bar">
+      <div id="resultsCount" class="results-count-text">Loading chemical catalogue...</div>
+      <div class="sort-select-wrapper">
+        <label for="sortSelect">Sort By:</label>
+        <select id="sortSelect" class="sort-select">
+          <option value="id-asc">Compound Code (Ascending)</option>
+          <option value="id-desc">Compound Code (Descending)</option>
+          <option value="name-asc">Name (A → Z)</option>
+          <option value="name-desc">Name (Z → A)</option>
+          <option value="mw-asc">Molecular Weight (Low → High)</option>
+          <option value="mw-desc">Molecular Weight (High → Low)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- VIEW 1: Cards Grid -->
+    <section id="catalogueView" style="display: block;">
+      <div id="cardsGrid" class="cards-grid">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: Master Data Table -->
+    <section id="tableView" style="display: none;">
+      <div class="table-view-container">
+        <div class="table-responsive">
+          <table class="destina-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Compound Name</th>
+                <th>Category Class</th>
+                <th>Formula</th>
+                <th>MW (Da)</th>
+                <th>CAS No.</th>
+                <th>Canonical SMILES</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Rendered by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: Reaction Pathways Explorer -->
+    <section id="pathwaysView" style="display: none;">
+      <div class="pathway-selector-row" id="pathwaySelectorRow">
+        <!-- Buttons injected by app.js -->
+      </div>
+      <div class="pathway-flow-container" id="pathwayFlowContainer">
+        <!-- Flow steps rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: Analytical QC & Retention Times -->
+    <section id="qcView" style="display: none;">
+      <div class="qc-dashboard-container">
+        <div class="qc-spec-summary-cards">
+          <div class="qc-spec-card">
+            <h4>RP-HPLC Purity Specification</h4>
+            <div class="spec-val">≥ 90.0%</div>
+            <p>Agilent Poroshell 120 EC-C18 (4.6 × 50 mm, 2.7 µm), Method DSTNA_CBU_2</p>
+          </div>
+          <div class="qc-spec-card">
+            <h4>Chiral HPLC Enantiomeric Excess</h4>
+            <div class="spec-val">100.0% ee</div>
+            <p>Cellulose-1 column (250 × 4.6 mm), baseline separation of L/D enantiomers</p>
+          </div>
+          <div class="qc-spec-card">
+            <h4>HRMS Identity Confirmation</h4>
+            <div class="spec-val">± 10 ppm</div>
+            <p>Theoretical exact mass tolerance verified by high-resolution MS</p>
+          </div>
+          <div class="qc-spec-card">
+            <h4>Optical Appearance at 0.2 M</h4>
+            <div class="spec-val">100% Limpid</div>
+            <p>Completely clear in NMP/DMF with zero particulate suspension</p>
+          </div>
+        </div>
+
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-main);">
+          Master PNA Monomer Retention Times & Chiral Resolution
+        </h3>
+        <div class="table-view-container">
+          <div class="table-responsive">
+            <table class="destina-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Chemical Description</th>
+                  <th>RP-HPLC Tr (CBU-2)</th>
+                  <th>Chiral Column & Mobile Phase</th>
+                  <th>Chiral Tr (min)</th>
+                  <th>Enantiomeric Excess</th>
+                </tr>
+              </thead>
+              <tbody id="qcTableBody">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Molecular Inspector Modal -->
+  <div id="compoundModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span id="modalIdBadge" class="id-badge">DST-PNA-001</span>
+          <h2 id="modalTitle" style="font-size: 17px; font-weight: 700;">Compound Details</h2>
+        </div>
+        <button id="modalCloseBtn" class="modal-close-btn" title="Close inspector">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Interactive Structure Viewport -->
+        <div class="modal-structure-viewer">
+          <div class="modal-viewer-switch">
+            <button id="switchSvgBtn" class="switch-btn active">Vector SVG</button>
+            <button id="switchPngBtn" class="switch-btn">Claude Vision PNG</button>
+          </div>
+          <img id="modalImg" src="" alt="Chemical Structure"/>
+        </div>
+
+        <!-- Property Badges -->
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span id="modalFormulaBadge" class="formula-mw-badge">C4H10N2O2</span>
+          <span id="modalMwBadge" class="formula-mw-badge">118.14 Da</span>
+          <span id="modalCasBadge" class="formula-mw-badge">CAS: -</span>
+        </div>
+
+        <!-- Systematic Info -->
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Systematic IUPAC Name</h4>
+          <p id="modalIupac" style="font-size: 13px; font-weight: 600; color: var(--text-main);">-</p>
+        </div>
+
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Operational Mechanism & Functional Role</h4>
+          <p id="modalRole" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">-</p>
+        </div>
+
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Document Reference & Synthetic Step</h4>
+          <p id="modalDoc" style="font-size: 12px; color: var(--primary-accent); font-weight: 600;">-</p>
+        </div>
+
+        <!-- Descriptors Grid -->
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Calculated Physical-Chemical Descriptors</h4>
+          <div class="modal-props-grid">
+            <div class="prop-cell">
+              <div class="prop-lbl">Exact MW</div>
+              <div id="propExactMw" class="prop-val">-</div>
+            </div>
+            <div class="prop-cell">
+              <div class="prop-lbl">LogP</div>
+              <div id="propLogP" class="prop-val">-</div>
+            </div>
+            <div class="prop-cell">
+              <div class="prop-lbl">TPSA</div>
+              <div id="propTpsa" class="prop-val">-</div>
+            </div>
+            <div class="prop-cell">
+              <div class="prop-lbl">H-Donors</div>
+              <div id="propHbd" class="prop-val">-</div>
+            </div>
+            <div class="prop-cell">
+              <div class="prop-lbl">H-Acceptors</div>
+              <div id="propHba" class="prop-val">-</div>
+            </div>
+            <div class="prop-cell">
+              <div class="prop-lbl">Rotatable Bonds</div>
+              <div id="propRotb" class="prop-val">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canonical SMILES Box -->
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Canonical SMILES</h4>
+          <div class="modal-code-box">
+            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalSmiles', 'SMILES')">Copy</button>
+            <pre id="modalSmiles">-</pre>
+          </div>
+        </div>
+
+        <!-- InChI Box -->
+        <div>
+          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">IUPAC InChI</h4>
+          <div class="modal-code-box">
+            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalInchi', 'InChI')">Copy</button>
+            <pre id="modalInchi">-</pre>
+          </div>
+        </div>
+
+        <!-- MolBlock Collapsible Preview -->
+        <details>
+          <summary style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; cursor: pointer; font-weight: 600; margin-bottom: 6px;">
+            View MDL MolBlock (V2000 Connection Table)
+          </summary>
+          <div class="modal-code-box">
+            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalMolblock', 'MolBlock')">Copy</button>
+            <pre id="modalMolblock" style="max-height: 180px; overflow-y: auto;">-</pre>
+          </div>
+        </details>
+      </div>
+
+      <div class="modal-footer-actions">
+        <button class="btn-action" onclick="downloadActiveMol()">📥 Download .MOL</button>
+        <button class="btn-action" onclick="downloadActiveSvg()">🎨 Download .SVG</button>
+        <button class="btn-action" onclick="downloadActivePng()">🖼️ Download .PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Load Master Data and Application Logic -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
