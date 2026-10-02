@@ -625,20 +625,60 @@ function pickVoice(ss) {
 }
 if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices(); }
 const VO_DIR = 'assets/vo/';
-const REC = { track: null, clips: [], mode: 'none' };
-(function loadRecordings() {
-  const probeAny = (base) => probe(base + '.mp3').then(a => a || probe(base + '.wav'));
-  const probe = (src) => new Promise(res => { const a = new Audio(); a.preload = 'auto'; a.oncanplaythrough = () => res(a); a.onerror = () => res(null); a.src = src; });
-  probeAny(VO_DIR + 'voiceover').then(t => {
-    if (t) { REC.track = t; REC.mode = 'track'; return; }
-    Promise.all(VO.map((_, i) => probeAny(VO_DIR + 'vo-' + String(i + 1).padStart(2, '0')))).then(cs => {
-      if (cs.some(Boolean)) { REC.clips = cs; REC.mode = 'clips'; }
-    });
-  });
-})();
+
+// Instant audio initialization: lightweight MP3 (612 KB) with automatic WAV fallback
+const masterTrack = new Audio();
+masterTrack.preload = 'auto';
+masterTrack.src = VO_DIR + 'voiceover.mp3';
+masterTrack.addEventListener('error', function onMp3Err() {
+  if (masterTrack.src && masterTrack.src.indexOf('.mp3') !== -1) {
+    masterTrack.src = VO_DIR + 'voiceover.wav';
+    masterTrack.load();
+  }
+}, { once: true });
+
+const REC = { track: masterTrack, clips: [], mode: 'track' };
+
 function VoiceOver({ on, rate = 1 }) {
   const { T, CUES, playing } = useComposition();
+  const tl = typeof useTimeline === 'function' ? useTimeline() : { time: T, setTime: () => {}, setPlaying: () => {} };
+  const [autoplayBlocked, setAutoplayBlocked] = React.useState(false);
   const ref = React.useRef({ last: -1, said: {}, cur: null });
+  const hasInteractedRef = React.useRef(false);
+
+  const unlockAudio = React.useCallback(() => {
+    hasInteractedRef.current = true;
+    setAutoplayBlocked(false);
+    const a = REC.track;
+    if (a) {
+      if (tl.time < 4.0 && typeof tl.setTime === 'function') {
+        tl.setTime(0);
+        a.currentTime = 0;
+      } else {
+        a.currentTime = Math.min(tl.time, a.duration || tl.time);
+      }
+      if (typeof tl.setPlaying === 'function') {
+        tl.setPlaying(true);
+      }
+      a.play().catch(() => {});
+    }
+  }, [tl]);
+
+  // Global unlock on very first click/tap anywhere
+  React.useEffect(() => {
+    const onUserGesture = () => {
+      if (!hasInteractedRef.current) {
+        unlockAudio();
+      }
+    };
+    window.addEventListener('pointerdown', onUserGesture, { capture: true, passive: true });
+    window.addEventListener('keydown', onUserGesture, { capture: true, passive: true });
+    return () => {
+      window.removeEventListener('pointerdown', onUserGesture, { capture: true });
+      window.removeEventListener('keydown', onUserGesture, { capture: true });
+    };
+  }, [unlockAudio]);
+
   React.useEffect(() => {
     const r = ref.current;
     const isSeeking = r.last >= 0 && Math.abs(T - r.last) > 0.3;
@@ -658,7 +698,21 @@ function VoiceOver({ on, rate = 1 }) {
         a.currentTime = Math.min(T, a.duration || T);
       }
       if (a.paused && T < (a.duration || 1e9)) {
-        a.play().catch(() => {});
+        const p = a.play();
+        if (p && typeof p.catch === 'function') {
+          p.catch(err => {
+            if (err && (err.name === 'NotAllowedError' || err.name === 'AbortError')) {
+              if (!hasInteractedRef.current) {
+                setAutoplayBlocked(true);
+                // Pause visual playback on frame 0 until user confirms, so they don't miss the intro
+                if (T < 1.0 && typeof tl.setPlaying === 'function') {
+                  tl.setPlaying(false);
+                  tl.setTime(0);
+                }
+              }
+            }
+          });
+        }
       }
       r.last = T;
       return;
@@ -705,11 +759,53 @@ function VoiceOver({ on, rate = 1 }) {
     });
     r.last = T;
   });
+
   React.useEffect(() => () => {
     window.speechSynthesis && window.speechSynthesis.cancel();
     REC.track && REC.track.pause();
     REC.clips.forEach(c => c && c.pause());
   }, []);
+
+  if (autoplayBlocked && on) {
+    return (
+      <div
+        onClick={unlockAudio}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(10, 15, 30, 0.45)',
+          backdropFilter: 'blur(6px)',
+          cursor: 'pointer',
+        }}
+      >
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #0039CA 0%, #001f70 100%)',
+            color: '#ffffff',
+            padding: '18px 36px',
+            borderRadius: 50,
+            boxShadow: '0 16px 48px rgba(0, 57, 202, 0.5), 0 0 0 1px rgba(255,255,255,0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            fontSize: 18,
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+            userSelect: 'none',
+          }}
+        >
+          <span style={{ fontSize: 24, lineHeight: 1 }}>▶</span>
+          <span>Iniciar con audio · Click to play</span>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 }
 function Piece({ tw }) {
