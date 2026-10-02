@@ -1,6 +1,7 @@
 /**
- * Destina Genomica — Chemical Catalogue Application Logic
- * Master Platform v4.0 | 81 Chemical Entities
+ * DESTINA Genomica — Chemical Catalogue Application Logic
+ * Master Technical Platform v4.0 | 81 Chemical Entities
+ * Compliant with Destina Design System
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sortSelect = document.getElementById('sortSelect');
   const resultsCount = document.getElementById('resultsCount');
   const catFilterNav = document.getElementById('categoryFilterNav');
-  const viewTabs = document.querySelectorAll('.view-tab-btn');
+  const viewTabs = document.querySelectorAll('.view-tab');
   const viewSections = {
     catalogue: document.getElementById('catalogueView'),
     table: document.getElementById('tableView'),
@@ -51,14 +52,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Theme Toggle
   const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const themeToggleText = document.getElementById('themeToggleText');
   themeToggleBtn.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     if (isDark) {
       document.documentElement.removeAttribute('data-theme');
-      themeToggleBtn.innerHTML = '🌙 Dark Mode';
+      themeToggleBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <span>Dark Mode</span>
+      `;
     } else {
       document.documentElement.setAttribute('data-theme', 'dark');
-      themeToggleBtn.innerHTML = '☀️ Light Mode';
+      themeToggleBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <span>Light Mode</span>
+      `;
     }
   });
 
@@ -87,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         count = compounds.filter(cat.matcher).length;
       }
       const chip = document.createElement('button');
-      chip.className = `cat-chip ${currentFilter === cat.key ? 'active' : ''}`;
-      chip.innerHTML = `${cat.label} <span class="chip-count">${count}</span>`;
+      chip.className = `filter-chip ${currentFilter === cat.key ? 'active' : ''}`;
+      chip.innerHTML = `${cat.label} <span class="chip-counter">${count}</span>`;
       chip.addEventListener('click', () => {
         currentFilter = cat.key;
         renderCategoryChips();
@@ -142,15 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render Grid Cards
+  // Render Grid Cards (Destina Design System Style: Radius 24, Blue-tinted Shadows)
   function renderCards(filtered) {
     cardsGrid.innerHTML = '';
     if (filtered.length === 0) {
       cardsGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; color: var(--text-muted);">
-          <div style="font-size: 36px; margin-bottom: 8px;">🔬</div>
-          <h3 style="font-size: 18px; color: var(--text-main); margin-bottom: 6px;">No chemical entities found</h3>
-          <p style="font-size: 13px;">No compound matches the active search query or category filter.</p>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--bg-card); border: 1px solid var(--border-hairline); border-radius: var(--radius-card);">
+          <div style="color: var(--text-muted); margin-bottom: 12px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">No chemical entities found</h3>
+          <p style="font-size: 13px; color: var(--text-muted);">No compound matches the active search query or category filter criteria.</p>
         </div>
       `;
       return;
@@ -158,25 +168,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filtered.forEach(c => {
       const card = document.createElement('div');
-      card.className = 'chem-card';
+      card.className = 'dg-card';
       const formattedFormula = formatFormulaUnicode(c.formula);
       const isSmartOrPeg = c.name.includes('SMART') || c.name.includes('PEG12') || c.name.includes('AC-RP12');
+      const docName = c.document ? c.document.split(' (')[0] : 'Destina SPPS Standard';
+      const casText = c.cas && c.cas !== '-' ? `CAS ${c.cas}` : 'Proprietary Entity';
 
       card.innerHTML = `
-        <div class="card-top-badges">
-          <span class="id-badge">${c.id}</span>
-          <span class="formula-mw-badge">${formattedFormula} • ${c.mw.toFixed(2)} Da</span>
+        <div class="card-header-bar">
+          <span class="code-pill">${c.id}</span>
+          <span class="formula-pill">${formattedFormula} • ${c.mw.toFixed(2)} Da</span>
         </div>
-        <div class="card-img-container">
-          <img src="${c.svg}" alt="${c.name}" loading="lazy" style="${isSmartOrPeg ? 'max-width: 96%;' : ''}"/>
+        <div class="card-structure-area">
+          <img src="${c.svg}" alt="${c.name}" loading="lazy" style="${isSmartOrPeg ? 'max-width: 95%;' : ''}"/>
         </div>
-        <div class="card-body">
-          <div class="card-title">${c.name}</div>
-          <div class="card-category-sub">${c.group.replace(/^\d+\.\s*/, '')}</div>
-          <div class="card-role-desc">${c.role}</div>
-          <div class="card-meta-footer">
-            <span class="doc-tag">📄 ${c.document ? c.document.split(' (')[0] : 'Destina SPPS'}</span>
-            <span class="cas-tag">${c.cas && c.cas !== '-' ? 'CAS ' + c.cas : 'Validated Entity'}</span>
+        <div class="card-content-area">
+          <div class="card-title-text">${c.name}</div>
+          <div class="card-category-lbl">${c.group.replace(/^\d+\.\s*/, '')}</div>
+          <div class="card-role-snippet">${c.role}</div>
+          <div class="card-footer-bar">
+            <span class="footer-doc">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              ${docName}
+            </span>
+            <span class="footer-cas">${casText}</span>
           </div>
         </div>
       `;
@@ -193,18 +208,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const tr = document.createElement('tr');
       const formattedFormula = formatFormulaUnicode(c.formula);
       tr.innerHTML = `
-        <td><strong style="color: var(--primary-accent);">${c.id}</strong></td>
+        <td><strong style="color: var(--dg-blue); font-family: var(--font-mono);">${c.id}</strong></td>
         <td><strong>${c.name}</strong></td>
-        <td>${c.group.replace(/^\d+\.\s*/, '')}</td>
+        <td><span style="font-size: 12px; color: var(--text-muted);">${c.group.replace(/^\d+\.\s*/, '')}</span></td>
         <td><span style="font-family: var(--font-mono);">${formattedFormula}</span></td>
         <td><strong>${c.mw.toFixed(2)}</strong></td>
-        <td>${c.cas || '-'}</td>
-        <td><div class="table-smiles-cell" title="${c.smiles}">${c.smiles}</div></td>
+        <td><span style="font-family: var(--font-mono); font-size: 12px;">${c.cas || '-'}</span></td>
+        <td><div class="table-smiles-box" title="${c.smiles}">${c.smiles}</div></td>
         <td>
-          <button class="table-action-btn" title="Inspect compound">Inspect</button>
+          <button class="btn-inspect-table" title="Inspect compound details">Inspect</button>
         </td>
       `;
-      tr.querySelector('.table-action-btn').addEventListener('click', (e) => {
+      tr.querySelector('.btn-inspect-table').addEventListener('click', (e) => {
         e.stopPropagation();
         openCompoundModal(c);
       });
@@ -267,10 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCasBadge.textContent = c.cas && c.cas !== '-' ? `CAS: ${c.cas}` : 'Proprietary Entity';
     modalIupac.textContent = c.iupac || c.name;
     modalRole.textContent = c.role;
-    modalDoc.textContent = c.document || 'DestiNA Genomics Standard Synthesis Protocol';
+    modalDoc.textContent = c.document || 'Destina Genomica Standard Synthesis Protocol';
     modalSmiles.textContent = c.smiles;
-    modalMolblock.textContent = c.molblock || 'Connection table available in .mol download';
-    modalInchi.textContent = c.inchi || 'Available in consolidated SDF';
+    modalMolblock.textContent = c.molblock || 'MDL Connection table available in .mol download';
+    modalInchi.textContent = c.inchi || 'Available in consolidated SDF dataset';
 
     // Descriptors
     const d = c.descriptors || {};
@@ -283,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Structure Viewer default (SVG)
     modalImg.src = c.svg;
-    document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.btn-mode-switch').forEach(b => b.classList.remove('active'));
     document.getElementById('switchSvgBtn').classList.add('active');
 
     modalOverlay.classList.add('open');
@@ -302,14 +317,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal View Switchers (SVG / PNG)
   document.getElementById('switchSvgBtn').addEventListener('click', function() {
     if (!activeCompound) return;
-    document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.btn-mode-switch').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
     modalImg.src = activeCompound.svg;
   });
 
   document.getElementById('switchPngBtn').addEventListener('click', function() {
     if (!activeCompound) return;
-    document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.btn-mode-switch').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
     modalImg.src = activeCompound.png;
   });
@@ -320,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) return;
     const text = el.textContent;
     navigator.clipboard.writeText(text).then(() => {
-      showToast(`Copied ${label} to clipboard!`);
+      showToast(`Copied ${label} to clipboard`);
     });
   };
 
@@ -331,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = activeCompound.mol;
     link.download = `${activeCompound.id}_${activeCompound.name.replace(/[^a-zA-Z0-9]/g, '_')}.mol`;
     link.click();
-    showToast(`Downloading MDL Molfile for ${activeCompound.id}...`);
+    showToast(`Downloading MDL Molfile: ${activeCompound.id}.mol`);
   };
 
   window.downloadActiveSvg = function() {
@@ -340,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = activeCompound.svg;
     link.download = `${activeCompound.id}.svg`;
     link.click();
-    showToast(`Downloading Vector SVG for ${activeCompound.id}...`);
+    showToast(`Downloading Vector SVG: ${activeCompound.id}.svg`);
   };
 
   window.downloadActivePng = function() {
@@ -349,23 +364,28 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = activeCompound.png;
     link.download = `${activeCompound.id}.png`;
     link.click();
-    showToast(`Downloading High-Res PNG for ${activeCompound.id}...`);
+    showToast(`Downloading Claude Vision PNG: ${activeCompound.id}.png`);
   };
 
-  // Global Toast Notification
+  // Global Toast Notification Shelf
   function showToast(message) {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `<span>✓</span> <span>${message}</span>`;
+    toast.className = 'dg-toast';
+    toast.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>${message}</span>
+    `;
     container.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
-      setTimeout(() => toast.remove(), 300);
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.25s ease';
+      setTimeout(() => toast.remove(), 250);
     }, 2800);
   }
 
-  // Reaction Pathway Explorer Data
+  // Reaction Pathway Explorer Data (All clean native Unicode, zero LaTeX)
   const pathwaysData = {
     smart: {
       title: 'SMART Cytosine REX PEG12-Biotin Synthetic Pathway (PT-SQ-001 Protocol)',
@@ -381,35 +401,35 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           num: 2,
           compoundId: 'DST-SMT-005',
-          title: 'Step 2: Sonogashira Coupling $\\rightarrow$ 5-PropargylamideTfa-Cytosine Acetal (Compound 2)',
+          title: 'Step 2: Sonogashira Coupling → 5-PropargylamideTfa-Cytosine Acetal (Compound 2)',
           reagents: 'Compound 1 + N-propargyltrifluoroacetamide (CAS 14719-21-2), Pd(PPh₃)₄ (cat.), CuI (cat.), Et₃N in anhydrous degassed DMF at 60 °C.',
           notes: 'Strict oxygen-free inert Argon conditions. C-C bond formation yields alkyne intermediate (MW 376.34 Da).'
         },
         {
           num: 3,
           compoundId: 'DST-SMT-006',
-          title: 'Step 3: Catalytic Hydrogenation $\\rightarrow$ 5-PropylamideTfa-Cytosine Acetal (Compound 3)',
+          title: 'Step 3: Catalytic Hydrogenation → 5-PropylamideTfa-Cytosine Acetal (Compound 3)',
           reagents: 'Compound 2 + H₂ (4-6 bar), 10% Pd on activated charcoal in anhydrous MeOH at room temperature.',
-          notes: 'Quantitative alkyne reduction to flexible C5-propyl chain. Filtered through Celite® pad (MW 380.37 Da).'
+          notes: 'Quantitative alkyne reduction to flexible C5-propyl chain. Filtered through Celite pad (MW 380.37 Da).'
         },
         {
           num: 4,
           compoundId: 'DST-SMT-007',
-          title: 'Step 4: Deprotection $\\rightarrow$ AC-REX-NH₂ Universal Platform (Compound 4)',
+          title: 'Step 4: Deprotection → AC-REX-NH₂ Universal Platform (Compound 4)',
           reagents: 'Compound 3 in 30% ammonium hydroxide aqueous solution at room temperature for 48 hours.',
           notes: 'Selective cleavage of trifluoroacetamide yielding nucleophilic primary amine (MW 284.36 Da) for labeling.'
         },
         {
           num: 5,
           compoundId: 'DST-SMT-009',
-          title: 'Step 5: Biotin Conjugation $\\rightarrow$ AC-RP12-Biotin Acetal (Compound 5)',
+          title: 'Step 5: Biotin Conjugation → AC-RP12-Biotin Acetal (Compound 5)',
           reagents: 'AC-REX-NH₂ + NHS-dPEG12-Biotin (CAS 365441-71-0, MW 941 Da), Et₃N in anhydrous DMF at room temperature (16 h).',
           notes: 'Quantitative active ester amide coupling. Yields protected acetal conjugate (MW 1110.38 Da).'
         },
         {
           num: 6,
           compoundId: 'DST-SMART-001',
-          title: 'Step 6: Acetal Cleavage $\\rightarrow$ Active SMART Cytosine Probe SC-RP12-B (Compound 6)',
+          title: 'Step 6: Acetal Cleavage → Active SMART Cytosine Probe SC-RP12-B (Compound 6)',
           reagents: 'Compound 5 in 10% aqueous Trifluoroacetic Acid (TFA) at room temperature for 2-3 hours.',
           notes: 'Deprotection unveils free formylmethyl aldehyde head for template-directed dynamic chemical labeling (MW 1036.25 Da).'
         }
@@ -422,21 +442,21 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           num: 1,
           compoundId: 'DST-GLU-002',
-          title: 'Scheme 1, Step 1: Dess-Martin Oxidation $\\rightarrow$ DGSL-Fmoc-L-Glu(OtBu)-H',
+          title: 'Scheme 1, Step 1: Dess-Martin Oxidation → DGSL-Fmoc-L-Glu(OtBu)-H',
           reagents: 'Fmoc-L-Glu(OtBu)-ol (CAS 153815-59-9) + Dess-Martin Periodinane (DMP, 2.1 eq) in wet DCM at 0-5 °C.',
-          notes: 'Crucial step developed by Dr. López-Delgado avoiding α-amino aldehyde epimerization (ee = 100%).'
+          notes: 'Developed by Dr. López-Delgado avoiding α-amino aldehyde epimerization (ee = 100%).'
         },
         {
           num: 2,
           compoundId: 'DST-GLU-003',
-          title: 'Scheme 1, Step 2: Reductive Amination $\\rightarrow$ γ-L-Glutamic Backbone',
+          title: 'Scheme 1, Step 2: Reductive Amination → γ-L-Glutamic Backbone',
           reagents: 'DGSL-Fmoc-L-Glu(OtBu)-H + Glycine methyl ester·HCl (2 eq), DIPEA, NaBH₃CN (1.6 eq), AcOH in MeOH at 0 °C to rt.',
           notes: 'Yields enantiopure methyl ester backbone (ee = 100%, Tr = 25.728 min on Cellulose-1 chiral column).'
         },
         {
           num: 3,
           compoundId: 'DST-GAM-004',
-          title: 'Scheme 2, Step 3 & 4: Nucleobase Coupling $\\rightarrow$ γ-L-Tglu Monomer',
+          title: 'Scheme 2, Step 3 & 4: Nucleobase Coupling → γ-L-Tglu Monomer',
           reagents: 'Backbone + Thymine-1-acetic acid (1.3 eq), DCC (1.3 eq), DhBtOH (1.3 eq) in DMF, followed by CaCl₂/NaOH saponification.',
           notes: 'DhBtOH prevents racemization during carbodiimide activation. Saponification in iPrOH/H₂O (7:3) selectively hydrolyzes methyl ester without cleaving Fmoc or OtBu.'
         },
@@ -456,28 +476,28 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           num: 1,
           compoundId: 'DST-SER-003',
-          title: 'Scheme 1, Step 1: Mixed Anhydride Reduction $\\rightarrow$ Fmoc-L/D-Ser(tBu)-ol',
+          title: 'Scheme 1, Step 1: Mixed Anhydride Reduction → Fmoc-L/D-Ser(tBu)-ol',
           reagents: 'Fmoc-L/D-Ser(tBu)-OH (CAS 71989-33-8) + N-methylmorpholine (NMM), Isobutyl chloroformate (IBCF) in DME at 0 °C; NaBH₄ in H₂O.',
           notes: 'Efficient reduction of carboxylic acid to alcohol 2a-b without racemizing the chiral α-carbon.'
         },
         {
           num: 2,
           compoundId: 'DST-SER-005',
-          title: 'Scheme 1, Step 2: Dess-Martin Oxidation $\\rightarrow$ Fmoc-L/D-Ser(tBu)-H',
+          title: 'Scheme 1, Step 2: Dess-Martin Oxidation → Fmoc-L/D-Ser(tBu)-H',
           reagents: 'Alcohol 2a-b + Dess-Martin Periodinane (2.1 eq) in wet DCM at 0-5 °C under N₂.',
           notes: 'Oxidation yields chiral aldehyde 3a-b, used directly in reductive amination without silica degradation.'
         },
         {
           num: 3,
           compoundId: 'DST-SER-007',
-          title: 'Scheme 1, Step 3: Reductive Amination $\\rightarrow$ L/D-γ-Serine Backbone',
+          title: 'Scheme 1, Step 3: Reductive Amination → L/D-γ-Serine Backbone',
           reagents: 'Aldehyde 3a-b + Glycine methyl ester·HCl (2.5 eq), DIPEA (2.5 eq), NaBH₃CN (2.5 eq), AcOH in MeOH at 0 °C to rt.',
           notes: 'Provides pseudopeptide backbone (Compound 4a-b, MW 440.54 Da) ready for solid-phase monomer assembly.'
         },
         {
           num: 4,
           compoundId: 'DST-SER-011',
-          title: 'Scheme 2, Step 4 & 5: Saponification $\\rightarrow$ Blank Monomers *L-Ser* & *D-Ser*',
+          title: 'Scheme 2, Step 4 & 5: Saponification → Blank Monomers *L-Ser* & *D-Ser*',
           reagents: 'Backbone 4a-b + Boc₂O (3 eq), TEA (3 eq) in THF; followed by CaCl₂ (0.8 M) / NaOH in iPrOH/H₂O (7:3) at 0 °C to rt.',
           notes: 'Selective hydrolysis delivers *L-Ser* (DSTNA_CBU_2 Tr = 6.413 min) and *D-Ser* (Tr = 6.459 min, 100% ee).'
         }
@@ -489,20 +509,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const pContainer = document.getElementById('pathwayFlowContainer');
     const pSelector = document.getElementById('pathwaySelectorRow');
     
-    // Render pathway buttons
+    // Render pathway tabs
     pSelector.innerHTML = `
-      <button class="pathway-btn ${activePathway === 'smart' ? 'active' : ''}" data-pathway="smart">
-        🧬 SMART Cytosine REX PEG12-Biotin (PT-SQ-001)
+      <button class="pathway-tab-btn ${activePathway === 'smart' ? 'active' : ''}" data-pathway="smart">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+        SMART Cytosine Cascade (PT-SQ-001)
       </button>
-      <button class="pathway-btn ${activePathway === 'glu' ? 'active' : ''}" data-pathway="glu">
-        🌿 γ-Chiral Glutamic PNA Platform
+      <button class="pathway-tab-btn ${activePathway === 'glu' ? 'active' : ''}" data-pathway="glu">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+        γ-Chiral Glutamic PNA Platform
       </button>
-      <button class="pathway-btn ${activePathway === 'ser' ? 'active' : ''}" data-pathway="ser">
-        🧪 γ-Chiral Serine PNA Platform
+      <button class="pathway-tab-btn ${activePathway === 'ser' ? 'active' : ''}" data-pathway="ser">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/></svg>
+        γ-Chiral Serine PNA Platform
       </button>
     `;
 
-    pSelector.querySelectorAll('.pathway-btn').forEach(btn => {
+    pSelector.querySelectorAll('.pathway-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         activePathway = btn.getAttribute('data-pathway');
         renderPathways();
@@ -515,21 +538,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const c = compounds.find(item => item.id === st.compoundId);
       const imgSrc = c ? c.svg : '';
       stepsHtml += `
-        <div class="pathway-step-card" data-comp-id="${st.compoundId}">
-          <div class="step-num-col">
-            <div class="step-badge-circ">${st.num}</div>
-            <div class="step-flow-line"></div>
-          </div>
-          <div class="step-img-thumb">
+        <div class="pathway-step-node" data-comp-id="${st.compoundId}">
+          <div class="step-node-badge">${st.num}</div>
+          <div class="step-node-preview">
             <img src="${imgSrc}" alt="${st.title}"/>
           </div>
-          <div class="step-info-col">
-            <div class="step-header-line">
-              <span class="id-badge">${st.compoundId}</span>
+          <div class="step-node-body">
+            <div class="step-node-title">
+              <span class="code-pill">${st.compoundId}</span>
               <strong style="font-size: 14px; color: var(--text-main);">${st.title}</strong>
             </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">${st.notes}</p>
-            <div class="step-reagents-box">
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px;">${st.notes}</p>
+            <div class="step-conditions-callout">
               <strong>Conditions & Reagents:</strong> ${st.reagents}
             </div>
           </div>
@@ -539,15 +559,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pContainer.innerHTML = `
       <div style="margin-bottom: 20px;">
-        <h3 style="font-size: 18px; color: var(--text-main); margin-bottom: 4px;">${curr.title}</h3>
+        <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">${curr.title}</h3>
         <p style="font-size: 13px; color: var(--text-muted);">${curr.desc}</p>
       </div>
-      <div class="pathway-steps-list">
+      <div class="pathway-steps-stream">
         ${stepsHtml}
       </div>
     `;
 
-    pContainer.querySelectorAll('.pathway-step-card').forEach(card => {
+    pContainer.querySelectorAll('.pathway-step-node').forEach(card => {
       card.addEventListener('click', () => {
         const cid = card.getAttribute('data-comp-id');
         const comp = compounds.find(item => item.id === cid);
@@ -558,22 +578,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Analytical QC Dashboard Data
   const analyticalMonomers = [
-    { code: 'T', name: 'Fmoc-PNA-T-OH', tr_rp: 5.105, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: 'Tpeg', name: 'Fmoc-γ-(mini-PEG)-T-PNA-OH', tr_rp: 5.223, col_chiral: '-', tr_chiral: '-', ee: 'Stereocontrolled' },
-    { code: 'X', name: 'Fmoc-Aeg(Boc)-OH (Abasic Aeg)', tr_rp: 5.439, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: 'Tlys', name: 'Fmoc-γ-L-Lys(Boc)-T-PNA-OH', tr_rp: 5.627, col_chiral: '-', tr_chiral: '-', ee: 'Stereocontrolled' },
+    { code: 'T', name: 'Fmoc-PNA-T-OH', tr_rp: 5.105, col_chiral: 'Achiral Base', tr_chiral: '-', ee: 'Achiral' },
+    { code: 'Tpeg', name: 'Fmoc-γ-(mini-PEG)-T-PNA-OH', tr_rp: 5.223, col_chiral: 'Stereocontrolled', tr_chiral: '-', ee: 'Stereocontrolled' },
+    { code: 'X', name: 'Fmoc-Aeg(Boc)-OH (Abasic Aeg)', tr_rp: 5.439, col_chiral: 'Achiral Backbone', tr_chiral: '-', ee: 'Achiral' },
+    { code: 'Tlys', name: 'Fmoc-γ-L-Lys(Boc)-T-PNA-OH', tr_rp: 5.627, col_chiral: 'Stereocontrolled', tr_chiral: '-', ee: 'Stereocontrolled' },
     { code: 'Tglu', name: 'Fmoc-γ-L-Tglu-PNA-COOH', tr_rp: 5.706, col_chiral: 'Cellulose-1 (iPrOH:Hex 20:80)', tr_chiral: 37.523, ee: '100% ee' },
-    { code: 'A', name: 'Fmoc-PNA-A(Bhoc)-OH', tr_rp: 5.777, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: 'G', name: 'Fmoc-PNA-G(Bhoc)-OH', tr_rp: 5.804, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: 'Hy', name: 'Fmoc-Hy-OH (Hydroxyethylglycine)', tr_rp: 5.841, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: '*_*', name: 'Standard DGL Spacer', tr_rp: 5.927, col_chiral: '-', tr_chiral: '-', ee: 'Standard' },
-    { code: 'C', name: 'Fmoc-PNA-C(Bhoc)-OH', tr_rp: 5.998, col_chiral: '-', tr_chiral: '-', ee: 'Achiral' },
-    { code: 'Cpeg', name: 'Fmoc-γ-(mini-PEG)-C(Bhoc)-PNA-OH', tr_rp: 6.073, col_chiral: '-', tr_chiral: '-', ee: 'Stereocontrolled' },
+    { code: 'A', name: 'Fmoc-PNA-A(Bhoc)-OH', tr_rp: 5.777, col_chiral: 'Achiral Base', tr_chiral: '-', ee: 'Achiral' },
+    { code: 'G', name: 'Fmoc-PNA-G(Bhoc)-OH', tr_rp: 5.804, col_chiral: 'Achiral Base', tr_chiral: '-', ee: 'Achiral' },
+    { code: 'Hy', name: 'Fmoc-Hy-OH (Hydroxyethylglycine)', tr_rp: 5.841, col_chiral: 'Achiral Backbone', tr_chiral: '-', ee: 'Achiral' },
+    { code: '*_*', name: 'Standard DGL Spacer', tr_rp: 5.927, col_chiral: 'Synthetic Standard', tr_chiral: '-', ee: 'Standard' },
+    { code: 'C', name: 'Fmoc-PNA-C(Bhoc)-OH', tr_rp: 5.998, col_chiral: 'Achiral Base', tr_chiral: '-', ee: 'Achiral' },
+    { code: 'Cpeg', name: 'Fmoc-γ-(mini-PEG)-C(Bhoc)-PNA-OH', tr_rp: 6.073, col_chiral: 'Stereocontrolled', tr_chiral: '-', ee: 'Stereocontrolled' },
     { code: 'Aglu', name: 'Fmoc-γ-L-A(Bhoc)glu-PNA-COOH', tr_rp: 6.210, col_chiral: 'Cellulose-1 (iPrOH:Hex 25:75)', tr_chiral: 32.199, ee: '100% ee' },
     { code: '*L-DAPA*', name: 'Fmoc-γ-L-DAPA(Boc)-Blank-PNA-COOH', tr_rp: 6.232, col_chiral: 'Cellulose-1', tr_chiral: '-', ee: 'Enantiopure' },
     { code: '*D-DAPA*', name: 'Fmoc-γ-D-DAPA(Boc)-Blank-PNA-COOH', tr_rp: 6.232, col_chiral: 'Cellulose-1', tr_chiral: '-', ee: 'Enantiopure' },
     { code: 'Gglu', name: 'Fmoc-γ-L-G(Bhoc)glu-PNA-COOH', tr_rp: 6.298, col_chiral: 'Cellulose-1 (iPrOH:Hex 30:70)', tr_chiral: 47.782, ee: '100% ee' },
-    { code: 'Clys', name: 'Fmoc-γ-L-Lys(Boc)-C(Bhoc)-PNA-OH', tr_rp: 6.389, col_chiral: '-', tr_chiral: '-', ee: 'Stereocontrolled' },
+    { code: 'Clys', name: 'Fmoc-γ-L-Lys(Boc)-C(Bhoc)-PNA-OH', tr_rp: 6.389, col_chiral: 'Stereocontrolled', tr_chiral: '-', ee: 'Stereocontrolled' },
     { code: '*L-Ser*', name: 'Blank Monomer (L-Serine derivative)', tr_rp: 6.413, col_chiral: 'Cellulose-1', tr_chiral: '-', ee: '100% ee' },
     { code: '*D-Ser*', name: 'Blank Monomer (D-Serine derivative)', tr_rp: 6.459, col_chiral: 'Cellulose-1', tr_chiral: '-', ee: '100% ee' },
     { code: 'Cglu', name: 'Fmoc-γ-L-C(Bhoc)glu-PNA-COOH', tr_rp: 6.462, col_chiral: 'Cellulose-1 (EtOH:MeOH:Hex 20:5:75)', tr_chiral: 17.682, ee: '100% ee' },
@@ -588,13 +608,13 @@ document.addEventListener('DOMContentLoaded', () => {
     analyticalMonomers.forEach(m => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong style="color: var(--primary-accent);">${m.code}</strong></td>
+        <td><strong style="color: var(--dg-blue); font-family: var(--font-mono);">${m.code}</strong></td>
         <td><strong>${m.name}</strong></td>
         <td>${m.tr_rp !== '-' ? `<span style="font-family: var(--font-mono); font-weight: 700;">${m.tr_rp.toFixed(3)} min</span>` : '-'}</td>
         <td>${m.col_chiral}</td>
         <td>${m.tr_chiral !== '-' ? `<span style="font-family: var(--font-mono);">${m.tr_chiral.toFixed(3)} min</span>` : '-'}</td>
         <td>
-          <span style="background: var(--badge-emerald-bg); color: var(--badge-emerald-text); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">
+          <span style="background: var(--dg-blue-bg); color: var(--dg-blue); border: 1px solid var(--border-blue); padding: 3px 8px; border-radius: var(--radius-pill); font-weight: 700; font-size: 11px;">
             ${m.ee}
           </span>
         </td>
@@ -618,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = 'destina_compounds.sdf';
     link.download = 'destina_compounds.sdf';
     link.click();
-    showToast("Downloading consolidated destina_compounds.sdf...");
+    showToast("Downloading consolidated destina_compounds.sdf");
   });
 
   document.getElementById('printDossierBtn').addEventListener('click', () => {

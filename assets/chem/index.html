@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Destina Genomica — Chemical Catalogue Master App</title>
+  <title>DESTINA Genomica — Chemical Catalogue Master Platform</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,108 +11,157 @@
 </head>
 <body>
 
-  <!-- Top Global Header -->
+  <!-- Top Global Header (Destina Design System 68px Navbar) -->
   <header class="destina-header">
     <div class="header-inner">
       <div class="brand-section">
-        <div class="brand-logo-icon">D</div>
+        <img src="assets/logotype-secondary-blue.png" alt="DESTINA Genomica" class="brand-logo-img">
+        <div class="brand-divider"></div>
         <div class="brand-titles">
-          <h1>DESTINA GENOMICA <span class="brand-badge">Catalogue App</span></h1>
-          <p>Chemical Biology & Diagnostic Probe Library — Master Technical Platform</p>
+          <h1>DESTINA GENOMICA</h1>
+          <p>Chemical Biology & Diagnostic Probe Library — Master Platform</p>
         </div>
       </div>
 
       <div class="header-badges">
-        <div class="iso-pill"><i>✓</i> ISO 9001:2015</div>
-        <div class="iso-pill"><i>✓</i> ISO 13485:2016</div>
-        <div class="iso-pill"><i>✓</i> Release 4.0 (81 Entities)</div>
+        <div class="badge-iso">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ISO 9001:2015
+        </div>
+        <div class="badge-iso">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ISO 13485:2016
+        </div>
+        <div class="badge-internal">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+          Internal Lab Node
+        </div>
       </div>
 
       <div class="header-actions">
-        <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
-          🌙 Dark Mode
+        <button id="themeToggleBtn" class="btn-secondary" style="height: 36px; padding: 0 12px; font-size: 12px;" title="Toggle Light/Dark Theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <span id="themeToggleText">Dark Mode</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Hero Banner & Stats Row -->
-  <section class="hero-banner">
+  <!-- Hero Section: Clinical Summary & Metrics -->
+  <section class="hero-section">
     <div class="hero-inner">
-      <div class="hero-stats-row">
-        <div class="hero-stat-card">
-          <div class="stat-icon">⚗️</div>
-          <div class="stat-content">
-            <div class="stat-val">81 Entities</div>
-            <div class="stat-lbl">Validated Compounds</div>
+      <div class="hero-header-line">
+        <h2>Chemical Catalogue & Reagent Specifications</h2>
+        <p>Consolidated 81-compound technical inventory: SMART cytosine cascade intermediates, peptide nucleic acid (PNA) chiral monomers, and solid-phase synthesis reagents.</p>
+      </div>
+
+      <!-- Metric StatCards (Destina Design System Style: 48px tile, 8% tint, radius 14) -->
+      <div class="hero-stats-grid">
+        <div class="dg-statcard">
+          <div class="statcard-tile">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+          </div>
+          <div>
+            <div class="statcard-val">81 Entities</div>
+            <div class="statcard-lbl">Validated Compounds</div>
           </div>
         </div>
-        <div class="hero-stat-card">
-          <div class="stat-icon">🧬</div>
-          <div class="stat-content">
-            <div class="stat-val">6 Steps</div>
-            <div class="stat-lbl">SMART Cytosine Cascade</div>
+
+        <div class="dg-statcard">
+          <div class="statcard-tile">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+          </div>
+          <div>
+            <div class="statcard-val">6 Steps</div>
+            <div class="statcard-lbl">SMART Cytosine Cascade</div>
           </div>
         </div>
-        <div class="hero-stat-card">
-          <div class="stat-icon">🎯</div>
-          <div class="stat-content">
-            <div class="stat-val">100.0% ee</div>
-            <div class="stat-lbl">Chiral HPLC Stereocontrol</div>
+
+        <div class="dg-statcard">
+          <div class="statcard-tile">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div>
+            <div class="statcard-val">100.0% ee</div>
+            <div class="statcard-lbl">Chiral Stereocontrol</div>
           </div>
         </div>
-        <div class="hero-stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-content">
-            <div class="stat-val">≥ 90.0%</div>
-            <div class="stat-lbl">Analytical Purity (CBU-2)</div>
+
+        <div class="dg-statcard">
+          <div class="statcard-tile">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+          </div>
+          <div>
+            <div class="statcard-val">&ge; 90.0%</div>
+            <div class="statcard-lbl">Analytical Purity (CBU-2)</div>
           </div>
         </div>
       </div>
 
       <!-- Controls Row: Search + View Tabs + Exports -->
-      <div class="search-controls-bar">
-        <div class="search-box-wrapper">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID (e.g. DST-SMT-001), CAS, formula, SMILES, IUPAC...">
+      <div class="controls-bar">
+        <div class="search-field-wrapper">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" class="dg-input" placeholder="Search by name, ID (e.g. DST-SMT-001), CAS, formula, SMILES, IUPAC...">
         </div>
 
-        <div class="view-tabs">
-          <button class="view-tab-btn active" data-view="catalogue">🗂 Grid Cards</button>
-          <button class="view-tab-btn" data-view="table">📊 Master Table</button>
-          <button class="view-tab-btn" data-view="pathways">⚗️ Reaction Pathways</button>
-          <button class="view-tab-btn" data-view="qc">📈 QC & Retention</button>
+        <div class="view-tabs-group">
+          <button class="view-tab active" data-view="catalogue">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            Grid Cards
+          </button>
+          <button class="view-tab" data-view="table">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+            Master Table
+          </button>
+          <button class="view-tab" data-view="pathways">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+            Reaction Pathways
+          </button>
+          <button class="view-tab" data-view="qc">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            QC & Retention
+          </button>
         </div>
 
-        <div class="export-btn-group">
-          <button id="exportJsonBtn" class="btn-action" title="Export full JSON dataset">JSON</button>
-          <button id="exportSdfBtn" class="btn-action" title="Download consolidated SDF">SDF</button>
-          <button id="printDossierBtn" class="btn-action" title="Print regulatory dossier">Print</button>
+        <div class="actions-group">
+          <button id="exportJsonBtn" class="btn-secondary" title="Export full JSON dataset">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            JSON
+          </button>
+          <button id="exportSdfBtn" class="btn-secondary" title="Download consolidated SDF">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            SDF
+          </button>
+          <button id="printDossierBtn" class="btn-primary" title="Print regulatory dossier">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            Print Dossier
+          </button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content Layout -->
-  <main class="app-main">
+  <main class="app-content">
 
     <!-- Category Chips Filter -->
-    <nav id="categoryFilterNav" class="category-filter-nav">
+    <nav id="categoryFilterNav" class="filter-chips-nav">
       <!-- Injected via app.js -->
     </nav>
 
-    <!-- Results Header -->
-    <div class="results-header-bar">
-      <div id="resultsCount" class="results-count-text">Loading chemical catalogue...</div>
-      <div class="sort-select-wrapper">
+    <!-- Results Header Bar -->
+    <div id="resultsMetaBar" class="results-meta-bar">
+      <div id="resultsCount" class="results-meta-text">Loading chemical catalogue...</div>
+      <div class="sort-group">
         <label for="sortSelect">Sort By:</label>
-        <select id="sortSelect" class="sort-select">
+        <select id="sortSelect" class="dg-select">
           <option value="id-asc">Compound Code (Ascending)</option>
           <option value="id-desc">Compound Code (Descending)</option>
-          <option value="name-asc">Name (A → Z)</option>
-          <option value="name-desc">Name (Z → A)</option>
-          <option value="mw-asc">Molecular Weight (Low → High)</option>
-          <option value="mw-desc">Molecular Weight (High → Low)</option>
+          <option value="name-asc">Name (A &rarr; Z)</option>
+          <option value="name-desc">Name (Z &rarr; A)</option>
+          <option value="mw-asc">Molecular Weight (Low &rarr; High)</option>
+          <option value="mw-desc">Molecular Weight (High &rarr; Low)</option>
         </select>
       </div>
     </div>
@@ -126,9 +175,9 @@
 
     <!-- VIEW 2: Master Data Table -->
     <section id="tableView" style="display: none;">
-      <div class="table-view-container">
-        <div class="table-responsive">
-          <table class="destina-table">
+      <div class="table-card-container">
+        <div class="table-scroll">
+          <table class="clinical-table">
             <thead>
               <tr>
                 <th>Code</th>
@@ -151,182 +200,216 @@
 
     <!-- VIEW 3: Reaction Pathways Explorer -->
     <section id="pathwaysView" style="display: none;">
-      <div class="pathway-selector-row" id="pathwaySelectorRow">
-        <!-- Buttons injected by app.js -->
-      </div>
-      <div class="pathway-flow-container" id="pathwayFlowContainer">
-        <!-- Flow steps rendered by app.js -->
+      <div class="pathways-layout">
+        <div class="pathways-nav" id="pathwaySelectorRow">
+          <!-- Buttons injected by app.js -->
+        </div>
+        <div class="pathway-board" id="pathwayFlowContainer">
+          <!-- Flow steps rendered by app.js -->
+        </div>
       </div>
     </section>
 
     <!-- VIEW 4: Analytical QC & Retention Times -->
     <section id="qcView" style="display: none;">
-      <div class="qc-dashboard-container">
-        <div class="qc-spec-summary-cards">
-          <div class="qc-spec-card">
-            <h4>RP-HPLC Purity Specification</h4>
-            <div class="spec-val">≥ 90.0%</div>
-            <p>Agilent Poroshell 120 EC-C18 (4.6 × 50 mm, 2.7 µm), Method DSTNA_CBU_2</p>
-          </div>
-          <div class="qc-spec-card">
-            <h4>Chiral HPLC Enantiomeric Excess</h4>
-            <div class="spec-val">100.0% ee</div>
-            <p>Cellulose-1 column (250 × 4.6 mm), baseline separation of L/D enantiomers</p>
-          </div>
-          <div class="qc-spec-card">
-            <h4>HRMS Identity Confirmation</h4>
-            <div class="spec-val">± 10 ppm</div>
-            <p>Theoretical exact mass tolerance verified by high-resolution MS</p>
-          </div>
-          <div class="qc-spec-card">
-            <h4>Optical Appearance at 0.2 M</h4>
-            <div class="spec-val">100% Limpid</div>
-            <p>Completely clear in NMP/DMF with zero particulate suspension</p>
-          </div>
+      <div class="qc-specs-row">
+        <div class="qc-spec-box">
+          <div class="spec-label">RP-HPLC Purity Specification</div>
+          <div class="spec-metric">&ge; 90.0%</div>
+          <div class="spec-desc">Agilent Poroshell 120 EC-C18 (4.6 &times; 50 mm, 2.7 &micro;m), Method DSTNA_CBU_2</div>
         </div>
+        <div class="qc-spec-box">
+          <div class="spec-label">Chiral Enantiomeric Excess</div>
+          <div class="spec-metric">100.0% ee</div>
+          <div class="spec-desc">Cellulose-1 column (250 &times; 4.6 mm), baseline separation of L/D enantiomers</div>
+        </div>
+        <div class="qc-spec-box">
+          <div class="spec-label">HRMS Identity Confirmation</div>
+          <div class="spec-metric">&plusmn; 10 ppm</div>
+          <div class="spec-desc">Theoretical exact mass tolerance verified by high-resolution Q-TOF/MALDI MS</div>
+        </div>
+        <div class="qc-spec-box">
+          <div class="spec-label">Optical Appearance at 0.2 M</div>
+          <div class="spec-metric">100% Limpid</div>
+          <div class="spec-desc">Completely clear solution in NMP/DMF with zero particulate suspension</div>
+        </div>
+      </div>
 
-        <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-main);">
-          Master PNA Monomer Retention Times & Chiral Resolution
-        </h3>
-        <div class="table-view-container">
-          <div class="table-responsive">
-            <table class="destina-table">
-              <thead>
-                <tr>
-                  <th>Code</th>
-                  <th>Chemical Description</th>
-                  <th>RP-HPLC Tr (CBU-2)</th>
-                  <th>Chiral Column & Mobile Phase</th>
-                  <th>Chiral Tr (min)</th>
-                  <th>Enantiomeric Excess</th>
-                </tr>
-              </thead>
-              <tbody id="qcTableBody">
-                <!-- Injected via app.js -->
-              </tbody>
-            </table>
-          </div>
+      <div class="table-card-container">
+        <div style="padding: 18px 22px; border-bottom: 1px solid var(--border-hairline);">
+          <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main);">
+            Master PNA Monomer Retention Times & Chiral Resolution
+          </h3>
+        </div>
+        <div class="table-scroll">
+          <table class="clinical-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Chemical Description</th>
+                <th>RP-HPLC Tr (CBU-2)</th>
+                <th>Chiral Column & Mobile Phase</th>
+                <th>Chiral Tr (min)</th>
+                <th>Enantiomeric Excess</th>
+              </tr>
+            </thead>
+            <tbody id="qcTableBody">
+              <!-- Injected via app.js -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Molecular Inspector Modal -->
+  <!-- Institutional Footer -->
+  <footer class="destina-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>DESTINA Genomica S.L.</strong> &bull; Parque Tecnol&oacute;gico de la Salud (PTS), Granada, Spain
+      </div>
+      <div>
+        Controlled Laboratory Technical Platform &bull; ISO 9001:2015 &bull; ISO 13485:2016 Compliant
+      </div>
+    </div>
+  </footer>
+
+  <!-- Molecular Inspector Modal (Destina Design System 20px Dialog) -->
   <div id="compoundModal" class="modal-overlay">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-header-left">
-          <span id="modalIdBadge" class="id-badge">DST-PNA-001</span>
-          <h2 id="modalTitle" style="font-size: 17px; font-weight: 700;">Compound Details</h2>
+    <div class="modal-dialog">
+      <div class="modal-top-bar">
+        <div class="modal-header-info">
+          <span id="modalIdBadge" class="code-pill">DST-PNA-001</span>
+          <h3 id="modalTitle" style="font-size: 16px; font-weight: 700; color: var(--text-main);">Compound Details</h3>
         </div>
-        <button id="modalCloseBtn" class="modal-close-btn" title="Close inspector">✕</button>
+        <button id="modalCloseBtn" class="modal-btn-close" title="Close inspector">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-scroll-body">
         <!-- Interactive Structure Viewport -->
-        <div class="modal-structure-viewer">
-          <div class="modal-viewer-switch">
-            <button id="switchSvgBtn" class="switch-btn active">Vector SVG</button>
-            <button id="switchPngBtn" class="switch-btn">Claude Vision PNG</button>
+        <div class="modal-viewport-box">
+          <div class="viewport-mode-toggle">
+            <button id="switchSvgBtn" class="btn-mode-switch active">Vector SVG</button>
+            <button id="switchPngBtn" class="btn-mode-switch">Claude Vision PNG</button>
           </div>
           <img id="modalImg" src="" alt="Chemical Structure"/>
         </div>
 
         <!-- Property Badges -->
         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <span id="modalFormulaBadge" class="formula-mw-badge">C4H10N2O2</span>
-          <span id="modalMwBadge" class="formula-mw-badge">118.14 Da</span>
-          <span id="modalCasBadge" class="formula-mw-badge">CAS: -</span>
+          <span id="modalFormulaBadge" class="formula-pill">C4H10N2O2</span>
+          <span id="modalMwBadge" class="formula-pill">118.14 Da</span>
+          <span id="modalCasBadge" class="formula-pill">CAS: -</span>
         </div>
 
         <!-- Systematic Info -->
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Systematic IUPAC Name</h4>
-          <p id="modalIupac" style="font-size: 13px; font-weight: 600; color: var(--text-main);">-</p>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Systematic IUPAC Name</div>
+          <div id="modalIupac" style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">-</div>
         </div>
 
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Operational Mechanism & Functional Role</h4>
-          <p id="modalRole" style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">-</p>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Operational Mechanism & Functional Role</div>
+          <div id="modalRole" style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">-</div>
         </div>
 
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Document Reference & Synthetic Step</h4>
-          <p id="modalDoc" style="font-size: 12px; color: var(--primary-accent); font-weight: 600;">-</p>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Document Reference & Synthetic Step</div>
+          <div id="modalDoc" style="font-size: 12.5px; color: var(--dg-blue); font-weight: 600;">-</div>
         </div>
 
-        <!-- Descriptors Grid -->
+        <!-- Descriptors Matrix -->
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Calculated Physical-Chemical Descriptors</h4>
-          <div class="modal-props-grid">
-            <div class="prop-cell">
-              <div class="prop-lbl">Exact MW</div>
-              <div id="propExactMw" class="prop-val">-</div>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Calculated Physical-Chemical Descriptors</div>
+          <div class="descriptors-matrix">
+            <div class="descriptor-tile">
+              <div class="desc-lbl">Exact MW</div>
+              <div id="propExactMw" class="desc-val">-</div>
             </div>
-            <div class="prop-cell">
-              <div class="prop-lbl">LogP</div>
-              <div id="propLogP" class="prop-val">-</div>
+            <div class="descriptor-tile">
+              <div class="desc-lbl">LogP</div>
+              <div id="propLogP" class="desc-val">-</div>
             </div>
-            <div class="prop-cell">
-              <div class="prop-lbl">TPSA</div>
-              <div id="propTpsa" class="prop-val">-</div>
+            <div class="descriptor-tile">
+              <div class="desc-lbl">TPSA</div>
+              <div id="propTpsa" class="desc-val">-</div>
             </div>
-            <div class="prop-cell">
-              <div class="prop-lbl">H-Donors</div>
-              <div id="propHbd" class="prop-val">-</div>
+            <div class="descriptor-tile">
+              <div class="desc-lbl">H-Donors</div>
+              <div id="propHbd" class="desc-val">-</div>
             </div>
-            <div class="prop-cell">
-              <div class="prop-lbl">H-Acceptors</div>
-              <div id="propHba" class="prop-val">-</div>
+            <div class="descriptor-tile">
+              <div class="desc-lbl">H-Acceptors</div>
+              <div id="propHba" class="desc-val">-</div>
             </div>
-            <div class="prop-cell">
-              <div class="prop-lbl">Rotatable Bonds</div>
-              <div id="propRotb" class="prop-val">-</div>
+            <div class="descriptor-tile">
+              <div class="desc-lbl">Rotatable Bonds</div>
+              <div id="propRotb" class="desc-val">-</div>
             </div>
           </div>
         </div>
 
         <!-- Canonical SMILES Box -->
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Canonical SMILES</h4>
-          <div class="modal-code-box">
-            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalSmiles', 'SMILES')">Copy</button>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Canonical SMILES</div>
+          <div class="code-field-container">
+            <button class="btn-code-copy" onclick="copyTextToClipboard('modalSmiles', 'SMILES')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copy
+            </button>
             <pre id="modalSmiles">-</pre>
           </div>
         </div>
 
         <!-- InChI Box -->
         <div>
-          <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">IUPAC InChI</h4>
-          <div class="modal-code-box">
-            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalInchi', 'InChI')">Copy</button>
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">IUPAC InChI</div>
+          <div class="code-field-container">
+            <button class="btn-code-copy" onclick="copyTextToClipboard('modalInchi', 'InChI')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copy
+            </button>
             <pre id="modalInchi">-</pre>
           </div>
         </div>
 
         <!-- MolBlock Collapsible Preview -->
         <details>
-          <summary style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; cursor: pointer; font-weight: 600; margin-bottom: 6px;">
+          <summary style="font-size: 11px; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; font-weight: 700; margin-bottom: 6px;">
             View MDL MolBlock (V2000 Connection Table)
           </summary>
-          <div class="modal-code-box">
-            <button class="copy-icon-btn" onclick="copyTextToClipboard('modalMolblock', 'MolBlock')">Copy</button>
+          <div class="code-field-container" style="margin-top: 6px;">
+            <button class="btn-code-copy" onclick="copyTextToClipboard('modalMolblock', 'MolBlock')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              Copy
+            </button>
             <pre id="modalMolblock" style="max-height: 180px; overflow-y: auto;">-</pre>
           </div>
         </details>
       </div>
 
-      <div class="modal-footer-actions">
-        <button class="btn-action" onclick="downloadActiveMol()">📥 Download .MOL</button>
-        <button class="btn-action" onclick="downloadActiveSvg()">🎨 Download .SVG</button>
-        <button class="btn-action" onclick="downloadActivePng()">🖼️ Download .PNG</button>
+      <div class="modal-bottom-actions">
+        <button class="btn-secondary" onclick="downloadActiveMol()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Download .MOL
+        </button>
+        <button class="btn-secondary" onclick="downloadActiveSvg()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Download .SVG
+        </button>
+        <button class="btn-secondary" onclick="downloadActivePng()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Download .PNG
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="toast-container"></div>
+  <!-- Toast Notification Shelf -->
+  <div id="toastContainer" class="toast-shelf"></div>
 
   <!-- Load Master Data and Application Logic -->
   <script src="data.js"></script>
