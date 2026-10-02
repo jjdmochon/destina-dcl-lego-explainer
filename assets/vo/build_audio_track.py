@@ -1,38 +1,41 @@
 """
 Build synchronized audio tracks for DESTINA DCL Explainer v3.
-- Trims silence from all 18 voice clips.
-- Adjusts tempo using WSOLA (preserving natural pitch).
+- Slices the master continuous recording (LEGO explainer voice off.wav) into 18 sentence clips.
+- Trims silence with soft safety padding and anti-click fades.
+- Adjusts tempo using WSOLA only if needed to guarantee a clean breathing pause before the next cue.
+- Saves vo-01.wav ... vo-18.wav with studio-grade timing.
 - Assembles a single continuous 78.50s master track: assets/vo/voiceover.wav.
-- Overwrites vo-01.wav ... vo-18.wav with the clean, non-overlapping clips.
 """
 
 import numpy as np
 import wave
 from pathlib import Path
 
-VO_DIR = Path(r"G:\Mi unidad\Developer\animations\DESTINA miRNA Detection lego Explainer\assets\vo")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+VO_DIR = Path(__file__).resolve().parent
+SOURCE_WAV = BASE_DIR / "LEGO explainer voice off.wav"
 
-# Exact cue start times in authored seconds (total duration 78.5s)
-TIMINGS = [
-    # (idx, start_time, next_cue_time)
-    (1,  0.60, 4.40),   # 01: "Destina Genomics. Dynamic Chemical Labelling."
-    (2,  4.40, 8.80),   # 02: "Reading microRNAs directly from serum, one base at a time."
-    (3,  8.80, 14.30),  # 03: "Serum goes straight onto colour-coded beads. No extraction, no PCR."
-    (4,  14.30, 20.90), # 04: "Each bead carries an abasic PNA probe, with one blank position."
-    (5,  20.90, 26.20), # 05: "miR-122 and miR-451 each hybridise to their own bead."
-    (6,  26.20, 30.00), # 06: "Opposite the blank sits a single guanine."
-    (7,  30.00, 34.20), # 07: "SMART-C-Biotin samples the blank position, reversibly."
-    (8,  34.20, 36.80), # 08: "It stays only if it pairs with G."
-    (9,  36.80, 40.00), # 09: "Reduction then locks it in, covalently."
-    (10, 40.00, 44.30), # 10: "Here, the base facing the blank is adenine, not guanine."
-    (11, 44.30, 49.00), # 11: "SMART-C cannot pair, so nothing is added. Single-base resolution."
-    (12, 49.00, 52.80), # 12: "Streptavidin-phycoerythrin binds the biotin, and the bead glows."
-    (13, 52.80, 55.90), # 13: "Mismatched and empty beads stay dark."
-    (14, 55.90, 61.10), # 14: "The plate is read on a Luminex instrument."
-    (15, 61.10, 65.60), # 15: "A red laser reads the bead code: which microRNA."
-    (16, 65.60, 69.80), # 16: "A green laser reads the label: how much."
-    (17, 69.80, 73.40), # 17: "Both, in the same well."
-    (18, 73.40, 78.50), # 18: "Destina Genomics. Read the microRNA itself."
+# Slice search ranges in the 70.4s recording, and exact cue start & next times in authored 78.5s animation
+SEGMENTS = [
+    # (idx, split_start, split_end, cue_start, next_cue, text)
+    (1,   0.00,  3.80,  0.60,  4.40, "Destina Genomics. Dynamic Chemical Labelling."),
+    (2,   3.80,  8.00,  4.40,  8.80, "Reading microRNAs from serum, one base at a time."),
+    (3,   8.00, 13.50,  8.80, 14.30, "Serum goes straight onto colour-coded beads. No extraction, no PCR."),
+    (4,  13.50, 19.30, 14.30, 20.90, "Each bead carries its own probe: one for 122, another for 451."),
+    (5,  19.30, 23.30, 20.90, 26.20, "122 and 451 each bind their own bead."),
+    (6,  23.30, 26.30, 26.20, 30.00, "Opposite the blank sits a single guanine."),
+    (7,  26.30, 30.40, 30.00, 34.20, "SMART-C-Biotin samples the blank position, reversibly."),
+    (8,  30.40, 32.60, 34.20, 36.80, "It stays only on G."),
+    (9,  32.60, 35.70, 36.80, 40.00, "Reduction then locks it in, covalently."),
+    (10, 35.70, 39.90, 40.00, 44.30, "Here, the base facing the blank is adenine, not guanine."),
+    (11, 39.90, 45.30, 44.30, 49.00, "SMART-C cannot pair, so nothing is added. Single-base resolution."),
+    (12, 45.30, 49.90, 49.00, 52.80, "Streptavidin-phycoerythrin binds the biotin, and the bead glows."),
+    (13, 49.90, 52.80, 52.80, 55.90, "Mismatched and empty beads stay dark."),
+    (14, 52.80, 55.60, 55.90, 61.10, "The plate is read on a Luminex instrument."),
+    (15, 55.60, 59.80, 61.10, 65.60, "A red laser reads the bead code: which microRNA."),
+    (16, 59.80, 63.20, 65.60, 69.80, "A green laser reads the label: how much."),
+    (17, 63.20, 67.00, 69.80, 73.40, "Both, in the same well."),
+    (18, 67.00, 70.40, 73.40, 78.50, "Destina Genomics. Read the microRNA itself."),
 ]
 
 def load_wav(path):
@@ -50,7 +53,8 @@ def save_wav(path, data, sr):
         wf.setframerate(sr)
         wf.writeframes(data_int16.tobytes())
 
-def trim_silence(data, sr, thresh=400, pad_ms=40):
+def trim_silence(data, sr, thresh_ratio=0.015, pad_ms=60):
+    thresh = np.max(np.abs(data)) * thresh_ratio
     active = np.where(np.abs(data) > thresh)[0]
     if len(active) == 0:
         return data
@@ -101,40 +105,40 @@ def wsola(x, speed, win_size=1024, hop=256):
     return out[:target_len]
 
 def main():
-    sr = 24000
+    print(f"Loading source master voiceover: {SOURCE_WAV}")
+    raw_master, sr = load_wav(SOURCE_WAV)
     total_duration = 78.50
     master_samples = int(total_duration * sr)
     master_track = np.zeros(master_samples, dtype=np.float32)
 
-    print("--- Processing and Aligning Voice Clips ---")
-    for idx, start_s, next_s in TIMINGS:
-        in_path = VO_DIR / f"vo-{idx:02d}.wav"
-        data, file_sr = load_wav(in_path)
-        assert file_sr == sr
+    print("\n--- Slicing and Aligning 18 Voice Clips ---")
+    for idx, s_split, e_split, start_s, next_s, text in SEGMENTS:
+        s_idx = int(s_split * sr)
+        e_idx = int(e_split * sr)
+        chunk = raw_master[s_idx:e_idx]
 
-        # 1. Trim dead silence
-        trimmed = trim_silence(data, sr)
+        trimmed = trim_silence(chunk, sr)
         t_dur = len(trimmed) / sr
         available_window = next_s - start_s
 
-        # 2. Compute optimal tempo speedup to leave a clean 0.35s breathing pause
-        target_dur = available_window - 0.35
+        # Leave a clean ~0.25s pause before the next animation cue
+        target_dur = available_window - 0.25
         if t_dur > target_dur:
             speed = t_dur / target_dur
         else:
             speed = 1.0
 
-        # WSOLA time-stretch
         processed = wsola(trimmed, speed)
         proc_dur = len(processed) / sr
         margin = available_window - proc_dur
 
-        print(f"[{idx:02d}] Start={start_s:5.2f}s | Win={available_window:4.2f}s | Speed={speed:4.2f}x | Dur={proc_dur:4.2f}s | Margin={margin:4.2f}s")
+        print(f"[{idx:02d}] Start={start_s:5.2f}s | Win={available_window:4.2f}s | Speed={speed:4.2f}x | Dur={proc_dur:4.2f}s | Margin={margin:4.2f}s | {text[:38]}...")
 
-        # 3. Overwrite clean individual clip
-        save_wav(in_path, processed, sr)
+        # Save individual clip
+        clip_path = VO_DIR / f"vo-{idx:02d}.wav"
+        save_wav(clip_path, processed, sr)
 
-        # 4. Insert into continuous master track
+        # Place into continuous 78.5s master track
         insert_idx = int(start_s * sr)
         end_idx = min(master_samples, insert_idx + len(processed))
         copied_len = end_idx - insert_idx

@@ -3,17 +3,17 @@
 British English, calm and clinical. Timecodes are from the video start (78.5 s total). Lines are written to fit the window before the next cue.
 
 - **0:00.6** — Destina Genomics. Dynamic Chemical Labelling.
-- **0:04.4** — Reading microRNAs directly from serum, one base at a time.
+- **0:04.4** — Reading microRNAs from serum, one base at a time.
 - **0:08.8** — Serum goes straight onto colour-coded beads. No extraction, no PCR.
-- **0:14.3** — Each bead carries an abasic PNA probe, with one blank position.
-- **0:20.9** — miR-122 and miR-451 each hybridise to their own bead.
+- **0:14.3** — Each bead carries its own probe: one for 122, another for 451.
+- **0:20.9** — 122 and 451 each bind their own bead.
 - **0:26.2** — Opposite the blank sits a single guanine.
 - **0:30.0** — SMART-C-Biotin samples the blank position, reversibly.
-- **0:34.2** — It stays only if it pairs with G.
+- **0:34.2** — It stays only on G.
 - **0:36.8** — Reduction then locks it in, covalently.
 - **0:40.0** — Here, the base facing the blank is adenine, not guanine.
 - **0:44.3** — SMART-C cannot pair, so nothing is added. Single-base resolution.
-- **0:49.0** — Streptavidin-phycoerythrin binds the biotin, and the bead glows.
+- **0:49.0** — Streptavidin-PE binds the biotin. The bead glows.
 - **0:52.8** — Mismatched and empty beads stay dark.
 - **0:55.9** — The plate is read on a Luminex instrument.
 - **1:01.1** — A red laser reads the bead code: which microRNA.
